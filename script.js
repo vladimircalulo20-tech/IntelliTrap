@@ -1,12 +1,51 @@
-/* =========================================
-   INTELLITRAP SCRIPT
-   Temporary Manual Image Upload Version
-========================================= */
+// ==========================================
+// INTELLITRAP AI-ASSISTED MONITORING SYSTEM
+// Teachable Machine Image Classification
+// ==========================================
 
+// Teachable Machine model URL
+const MODEL_URL =
+    "https://teachablemachine.withgoogle.com/models/S5F-KssgP/";
 
-/* =========================================
-   DATE AND TIME
-========================================= */
+// Global variables
+let model;
+let maxPredictions;
+let selectedImage = null;
+let selectedImageURL = null;
+let currentPrediction = null;
+let currentConfidence = 0;
+
+// ==========================================
+// PAGE ELEMENTS
+// ==========================================
+
+const imageInput = document.getElementById("imageInput");
+const imageContainer = document.getElementById("imageContainer");
+const imagePlaceholder = document.getElementById("imagePlaceholder");
+const analyzeButton = document.getElementById("analyzeButton");
+const imageMessage = document.getElementById("imageMessage");
+
+const aiResultBox = document.getElementById("aiResultBox");
+const predictionText = document.getElementById("prediction");
+const confidenceText = document.getElementById("confidence");
+const confidenceBar = document.getElementById("confidenceBar");
+const assessmentNote = document.getElementById("assessmentNote");
+
+// ==========================================
+// INITIALIZE PAGE
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    loadModel();
+    updateDemoSensors();
+});
+
+// ==========================================
+// DATE AND TIME
+// ==========================================
 
 function updateDateTime() {
     const dateTimeElement = document.getElementById("dateTime");
@@ -15,247 +54,295 @@ function updateDateTime() {
 
     const now = new Date();
 
-    const options = {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
+    const formattedDate = now.toLocaleDateString("en-PH", {
         year: "numeric",
-        hour: "numeric",
+        month: "long",
+        day: "numeric"
+    });
+
+    const formattedTime = now.toLocaleTimeString("en-PH", {
+        hour: "2-digit",
         minute: "2-digit",
         second: "2-digit"
-    };
+    });
 
-    dateTimeElement.textContent = now.toLocaleString("en-US", options);
+    dateTimeElement.textContent = `${formattedDate} | ${formattedTime}`;
 }
 
-updateDateTime();
-setInterval(updateDateTime, 1000);
+// ==========================================
+// LOAD AI MODEL
+// ==========================================
 
+async function loadModel() {
+    try {
+        predictionText.textContent = "Loading AI model...";
+        assessmentNote.textContent =
+            "Please wait while IntelliTrap loads the AI model.";
 
-/* =========================================
-   IMAGE UPLOAD AND PREVIEW
-========================================= */
+        model = await tmImage.load(
+            MODEL_URL + "model.json",
+            MODEL_URL + "metadata.json"
+        );
 
-const imageInput = document.getElementById("imageInput");
-const imageContainer = document.getElementById("imageContainer");
-const imagePlaceholder = document.getElementById("imagePlaceholder");
-const analyzeButton = document.getElementById("analyzeButton");
-const imageMessage = document.getElementById("imageMessage");
+        maxPredictions = model.getTotalClasses();
 
-let selectedImage = null;
-let selectedImageURL = null;
+        predictionText.textContent = "Ready";
+        confidenceText.textContent = "--";
+        confidenceBar.style.width = "0%";
+
+        assessmentNote.textContent =
+            "AI model loaded successfully. Upload an image to begin.";
+
+        console.log("IntelliTrap AI model loaded successfully.");
+    } catch (error) {
+        console.error("Error loading AI model:", error);
+
+        predictionText.textContent = "Model Error";
+        confidenceText.textContent = "--";
+        assessmentNote.textContent =
+            "The AI model could not be loaded. Check the model URL and internet connection.";
+    }
+}
+
+// ==========================================
+// IMAGE UPLOAD / CAMERA INPUT
+// ==========================================
 
 if (imageInput) {
-    imageInput.addEventListener("change", function () {
-        const file = this.files[0];
-
-        if (!file) return;
-
-        // Check if the selected file is an image
-        if (!file.type.startsWith("image/")) {
-            imageMessage.textContent = "Please select a valid image file.";
-            return;
-        }
-
-        selectedImage = file;
-
-        // Remove the previous preview if there is one
-        if (selectedImageURL) {
-            URL.revokeObjectURL(selectedImageURL);
-        }
-
-        selectedImageURL = URL.createObjectURL(file);
-
-        // Clear the preview container
-        imageContainer.innerHTML = "";
-
-        // Create image preview
-        const previewImage = document.createElement("img");
-        previewImage.src = selectedImageURL;
-        previewImage.alt = "Selected inspection site image";
-        previewImage.className = "uploaded-image";
-
-        imageContainer.appendChild(previewImage);
-
-        // Enable AI button
-        analyzeButton.disabled = false;
-
-        // Update message
-        imageMessage.textContent =
-            "Image selected: " + file.name;
-
-        // Reset AI result
-        document.getElementById("prediction").textContent =
-            "Ready to analyze";
-
-        document.getElementById("confidence").textContent = "--";
-        document.getElementById("confidenceBar").style.width = "0%";
-
-        document.getElementById("assessmentNote").textContent =
-            "Your image is ready. Click “Analyze with AI” to continue.";
-    });
+    imageInput.addEventListener("change", handleImageUpload);
 }
 
+function handleImageUpload(event) {
+    const file = event.target.files[0];
 
-/* =========================================
-   AI ANALYSIS - TEMPORARY DEMO VERSION
-========================================= */
+    if (!file) return;
 
-function analyzeImage() {
-    if (!selectedImage) {
-        alert("Please choose or upload an image first.");
+    if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file.");
         return;
     }
 
-    const predictionElement = document.getElementById("prediction");
-    const confidenceElement = document.getElementById("confidence");
-    const confidenceBar = document.getElementById("confidenceBar");
-    const assessmentNote = document.getElementById("assessmentNote");
-    const aiResultBox = document.getElementById("aiResultBox");
+    selectedImage = file;
 
-    // Show analyzing status
-    predictionElement.textContent = "Analyzing...";
-    confidenceElement.textContent = "--";
+    if (selectedImageURL) {
+        URL.revokeObjectURL(selectedImageURL);
+    }
+
+    selectedImageURL = URL.createObjectURL(file);
+
+    // Clear the image container
+    imageContainer.innerHTML = "";
+
+    // Create image preview
+    const imageElement = document.createElement("img");
+    imageElement.src = selectedImageURL;
+    imageElement.alt = "Uploaded site image";
+    imageElement.className = "uploaded-image";
+    imageElement.id = "uploadedImage";
+
+    imageContainer.appendChild(imageElement);
+
+    // Enable analysis
+    analyzeButton.disabled = false;
+
+    if (imageMessage) {
+        imageMessage.textContent =
+            "Image uploaded successfully. Click Analyze with AI.";
+    }
+
+    // Reset previous result
+    currentPrediction = null;
+    currentConfidence = 0;
+
+    predictionText.textContent = "Ready to Analyze";
+    confidenceText.textContent = "--";
     confidenceBar.style.width = "0%";
 
     assessmentNote.textContent =
-        "The system is processing the uploaded image...";
-
-    aiResultBox.classList.add("analyzing");
-
-    analyzeButton.disabled = true;
-
-    // Temporary simulation of AI processing
-    setTimeout(() => {
-
-        /*
-          TEMPORARY DEMO RESULT
-
-          Replace this section later with your
-          Teachable Machine AI model.
-        */
-
-        const prediction = "Needs Further Inspection";
-        const confidence = 87;
-
-        predictionElement.textContent = prediction;
-        confidenceElement.textContent = confidence + "%";
-        confidenceBar.style.width = confidence + "%";
-
-        assessmentNote.textContent =
-            "The image shows an area that requires physical verification. " +
-            "This is a preliminary AI-assisted assessment.";
-
-        aiResultBox.classList.remove("analyzing");
-
-        analyzeButton.disabled = false;
-
-    }, 1500);
+        "Your image is ready for AI-assisted assessment.";
 }
 
+// ==========================================
+// ANALYZE IMAGE USING TEACHABLE MACHINE
+// ==========================================
 
-/* =========================================
-   SAVE ASSESSMENT
-========================================= */
+async function analyzeImage() {
+    if (!selectedImage) {
+        alert("Please take or upload an image first.");
+        return;
+    }
+
+    if (!model) {
+        alert("The AI model is still loading. Please wait a moment.");
+        return;
+    }
+
+    const imageElement = document.getElementById("uploadedImage");
+
+    if (!imageElement) {
+        alert("Image preview not found. Please upload the image again.");
+        return;
+    }
+
+    // Disable button during analysis
+    analyzeButton.disabled = true;
+    analyzeButton.textContent = "Analyzing...";
+
+    predictionText.textContent = "Analyzing...";
+    confidenceText.textContent = "--";
+    confidenceBar.style.width = "0%";
+    assessmentNote.textContent =
+        "The AI is examining the image for visual indicators of a possible mosquito breeding site.";
+
+    try {
+        // Predict image using the trained model
+        const predictions = await model.predict(imageElement);
+
+        // Find the prediction with the highest probability
+        let highestPrediction = predictions[0];
+
+        for (let i = 1; i < predictions.length; i++) {
+            if (
+                predictions[i].probability >
+                highestPrediction.probability
+            ) {
+                highestPrediction = predictions[i];
+            }
+        }
+
+        const className = highestPrediction.className;
+        const confidenceValue = highestPrediction.probability * 100;
+
+        currentPrediction = className;
+        currentConfidence = confidenceValue;
+
+        // Display result
+        predictionText.textContent = className;
+        confidenceText.textContent =
+            `${confidenceValue.toFixed(1)}%`;
+        confidenceBar.style.width =
+            `${confidenceValue.toFixed(1)}%`;
+
+        // Display an appropriate explanation
+        if (
+            className.toLowerCase().includes("possible") &&
+            !className.toLowerCase().includes("not")
+        ) {
+            assessmentNote.textContent =
+                "The AI detected visual indicators associated with a possible mosquito breeding site. Physical verification is recommended.";
+        } else {
+            assessmentNote.textContent =
+                "The AI did not detect strong visual indicators of a possible mosquito breeding site in this image.";
+        }
+
+        console.log("AI Predictions:", predictions);
+    } catch (error) {
+        console.error("Error analyzing image:", error);
+
+        predictionText.textContent = "Analysis Error";
+        confidenceText.textContent = "--";
+        confidenceBar.style.width = "0%";
+        assessmentNote.textContent =
+            "An error occurred while analyzing the image. Please try again.";
+    }
+
+    analyzeButton.disabled = false;
+    analyzeButton.textContent = "✨ Analyze with AI";
+}
+
+// ==========================================
+// SAVE ASSESSMENT
+// ==========================================
 
 function saveAssessment() {
     const locationInput = document.getElementById("location");
     const notesInput = document.getElementById("notes");
-    const saveMessage = document.getElementById("saveMessage");
     const activityLog = document.getElementById("activityLog");
-
-    const prediction = document.getElementById("prediction").textContent;
-    const confidence = document.getElementById("confidence").textContent;
-    const temperature = document.getElementById("temperature").textContent;
-    const humidity = document.getElementById("humidity").textContent;
-    const water = document.getElementById("water").textContent;
-
-    const location = locationInput.value.trim() || "Unspecified Location";
-    const notes = notesInput.value.trim();
+    const saveMessage = document.getElementById("saveMessage");
 
     if (!selectedImage) {
-        saveMessage.textContent =
-            "Please upload an image before saving.";
+        alert("Please upload an image before saving.");
         return;
     }
 
-    if (
-        prediction === "Waiting for image" ||
-        prediction === "Ready to analyze" ||
-        prediction === "Analyzing..."
-    ) {
-        saveMessage.textContent =
-            "Please analyze the image before saving.";
+    if (!currentPrediction) {
+        alert("Please analyze the image before saving.");
         return;
     }
+
+    const location = locationInput
+        ? locationInput.value.trim()
+        : "";
+
+    const notes = notesInput
+        ? notesInput.value.trim()
+        : "";
 
     const now = new Date();
 
-    const dateTime = now.toLocaleString("en-US", {
-        month: "short",
-        day: "numeric",
+    const date = now.toLocaleDateString("en-PH", {
         year: "numeric",
-        hour: "numeric",
+        month: "short",
+        day: "numeric"
+    });
+
+    const time = now.toLocaleTimeString("en-PH", {
+        hour: "2-digit",
         minute: "2-digit"
     });
 
-    // Remove "No records yet" row
-    const emptyRow = activityLog.querySelector(".empty-row");
+    const row = document.createElement("tr");
 
-    if (emptyRow) {
-        emptyRow.parentElement.remove();
+    const dateCell = document.createElement("td");
+    dateCell.textContent = `${date}, ${time}`;
+
+    const locationCell = document.createElement("td");
+    locationCell.textContent = location || "Not specified";
+
+    const resultCell = document.createElement("td");
+    resultCell.textContent = currentPrediction;
+
+    const confidenceCell = document.createElement("td");
+    confidenceCell.textContent =
+        `${currentConfidence.toFixed(1)}%`;
+
+    const notesCell = document.createElement("td");
+    notesCell.textContent = notes || "No notes";
+
+    row.appendChild(dateCell);
+    row.appendChild(locationCell);
+    row.appendChild(resultCell);
+    row.appendChild(confidenceCell);
+    row.appendChild(notesCell);
+
+    activityLog.prepend(row);
+
+    if (saveMessage) {
+        saveMessage.textContent =
+            "Assessment saved successfully!";
+        saveMessage.style.color = "green";
     }
 
-    // Create new activity row
-    const newRow = document.createElement("tr");
-
-    newRow.innerHTML = `
-        <td>${dateTime}</td>
-        <td>${location}</td>
-        <td>${temperature}</td>
-        <td>${humidity}</td>
-        <td>${water}</td>
-        <td>${prediction}</td>
-        <td>${confidence}</td>
-    `;
-
-    activityLog.prepend(newRow);
-
-    saveMessage.textContent =
-        notes
-            ? "Assessment saved successfully with notes."
-            : "Assessment saved successfully.";
-
-    setTimeout(() => {
-        saveMessage.textContent = "";
-    }, 3000);
+    // Clear fields
+    if (locationInput) locationInput.value = "";
+    if (notesInput) notesInput.value = "";
 }
 
-
-/* =========================================
-   TEMPORARY SENSOR VALUES
-   Replace later with ESP32/Firebase data
-========================================= */
-
-// These are only sample values for testing.
-// They are NOT actual ESP32 readings.
+// ==========================================
+// DEMO SENSOR VALUES
+// ==========================================
 
 function updateDemoSensors() {
-    const temperatureElement = document.getElementById("temperature");
-    const humidityElement = document.getElementById("humidity");
-    const waterElement = document.getElementById("water");
+    const temperature = document.getElementById("temperature");
+    const humidity = document.getElementById("humidity");
+    const water = document.getElementById("water");
+    const deviceStatus = document.getElementById("deviceStatus");
 
-    if (temperatureElement) {
-        temperatureElement.textContent = "-- °C";
-    }
+    if (temperature) temperature.textContent = "-- °C";
+    if (humidity) humidity.textContent = "-- %";
+    if (water) water.textContent = "Not Connected";
 
-    if (humidityElement) {
-        humidityElement.textContent = "-- %";
-    }
-
-    if (waterElement) {
-        waterElement.textContent = "--";
+    if (deviceStatus) {
+        deviceStatus.textContent = "Offline";
     }
 }
-
-updateDemoSensors();
