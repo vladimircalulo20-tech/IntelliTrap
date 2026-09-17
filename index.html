@@ -199,16 +199,16 @@
                         you want the AI to inspect.
                     </p>
 
+                    <!-- Image Preview Area -->
                     <div class="image-container" id="imageContainer">
                         <div class="image-placeholder" id="imagePlaceholder">
                             <div class="camera-large">📷</div>
                             <h3>No image captured</h3>
-                            <p>Take a photo using your iPad camera</p>
+                            <p>Take a photo or upload an image of the site</p>
                         </div>
-
-                        <img id="previewImage" alt="Captured site image">
                     </div>
 
+                    <!-- Image Buttons -->
                     <div class="button-group">
 
                         <label for="imageInput" class="primary-button">
@@ -220,6 +220,7 @@
                             id="imageInput"
                             accept="image/*"
                             capture="environment"
+                            hidden
                         >
 
                         <button
@@ -388,6 +389,7 @@
         </footer>
 
     </div>
+
 
     <script src="script.js"></script>
 
