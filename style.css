@@ -667,6 +667,7 @@ label {
 ========================================== */
 
 @media (max-width: 1200px) {
+
     .main-content {
         padding: 30px;
     }
@@ -678,9 +679,11 @@ label {
     .content-grid {
         grid-template-columns: 1fr;
     }
+
 }
 
 @media (max-width: 800px) {
+
     .sidebar {
         position: relative;
         width: 100%;
@@ -723,9 +726,11 @@ label {
     .form-grid {
         grid-template-columns: 1fr;
     }
+
 }
 
 @media (max-width: 500px) {
+
     .status-grid {
         grid-template-columns: 1fr;
     }
@@ -754,4 +759,5 @@ label {
     .section-header h2 {
         font-size: 20px;
     }
+
 }
