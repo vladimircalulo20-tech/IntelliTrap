@@ -6,7 +6,7 @@
 
     <title>IntelliTrap | AI-Assisted Mosquito Monitoring</title>
 
-    <!-- Stylesheet -->
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="style.css">
 
     <!-- TensorFlow.js -->
@@ -18,20 +18,20 @@
 
 <body>
 
-    <!-- ==========================================
-         SIDEBAR / NAVIGATION
-    =========================================== -->
-
+    <!-- SIDEBAR -->
     <aside class="sidebar">
+
         <div class="brand">
             <div class="brand-icon">🦟</div>
+
             <div>
                 <h1>IntelliTrap</h1>
-                <p>Smart Environmental Monitoring</p>
+                <p>Smart Environmental<br>Monitoring</p>
             </div>
         </div>
 
         <nav class="navigation">
+
             <a href="#dashboard" class="nav-item active">
                 <span>📊</span>
                 <span>Dashboard</span>
@@ -51,26 +51,28 @@
                 <span>ℹ️</span>
                 <span>About IntelliTrap</span>
             </a>
+
         </nav>
 
         <div class="sidebar-footer">
             <p>AI-Assisted Monitoring System</p>
             <small>IntelliTrap Prototype</small>
         </div>
+
     </aside>
 
 
-    <!-- ==========================================
-         MAIN CONTENT
-    =========================================== -->
-
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- TOP HEADER -->
+        <!-- HEADER -->
         <header class="top-header">
+
             <div>
                 <p class="page-label">ENVIRONMENTAL MONITORING</p>
+
                 <h2 id="dashboard">IntelliTrap Dashboard</h2>
+
                 <p class="welcome-text">
                     Monitor possible mosquito breeding-site indicators using AI-assisted image classification.
                 </p>
@@ -80,17 +82,16 @@
                 <span>🕒</span>
                 <span id="dateTime">Loading date and time...</span>
             </div>
+
         </header>
 
 
-        <!-- ==========================================
-             DASHBOARD STATUS CARDS
-        =========================================== -->
-
+        <!-- STATUS CARDS -->
         <section class="status-grid">
 
             <div class="status-card">
                 <div class="status-card-icon blue-icon">🤖</div>
+
                 <div>
                     <p class="status-label">Robot Status</p>
                     <h3 id="deviceStatus">Offline</h3>
@@ -100,8 +101,10 @@
                 </div>
             </div>
 
+
             <div class="status-card">
                 <div class="status-card-icon green-icon">📷</div>
+
                 <div>
                     <p class="status-label">Camera</p>
                     <h3>Smartphone</h3>
@@ -111,8 +114,10 @@
                 </div>
             </div>
 
+
             <div class="status-card">
                 <div class="status-card-icon purple-icon">🧠</div>
+
                 <div>
                     <p class="status-label">AI Model</p>
                     <h3>Teachable Machine</h3>
@@ -122,8 +127,10 @@
                 </div>
             </div>
 
+
             <div class="status-card">
                 <div class="status-card-icon orange-icon">📋</div>
+
                 <div>
                     <p class="status-label">Assessment</p>
                     <h3>Manual Review</h3>
@@ -136,10 +143,7 @@
         </section>
 
 
-        <!-- ==========================================
-             CAPTURE AND AI ANALYSIS SECTION
-        =========================================== -->
-
+        <!-- CAPTURE AND AI SECTION -->
         <section class="content-grid" id="capture">
 
             <!-- IMAGE CAPTURE CARD -->
@@ -148,24 +152,30 @@
                 <div class="section-header">
                     <div>
                         <p class="card-label">IMAGE INPUT</p>
+
                         <h2>Capture or Upload Image</h2>
+
                         <p>
                             Use your smartphone camera to capture an image of the monitoring area.
                         </p>
                     </div>
                 </div>
 
+
                 <div class="image-container" id="imageContainer">
 
                     <div class="image-placeholder" id="imagePlaceholder">
                         <div class="camera-large">📷</div>
+
                         <h3>No image captured</h3>
+
                         <p>
                             Take a photo or upload an image of the site.
                         </p>
                     </div>
 
                 </div>
+
 
                 <div class="button-group">
 
@@ -192,6 +202,7 @@
 
                 </div>
 
+
                 <p class="capture-note" id="imageMessage">
                     Select an image to begin.
                 </p>
@@ -203,24 +214,31 @@
             <div class="dashboard-card ai-card">
 
                 <div class="section-header">
+
                     <div>
                         <p class="card-label">AI ASSESSMENT</p>
+
                         <h2>Analysis Result</h2>
+
                         <p>
                             AI-assisted classification of the uploaded image.
                         </p>
                     </div>
 
                     <div class="ai-icon">🧠</div>
+
                 </div>
+
 
                 <div class="ai-result-box" id="aiResultBox">
 
                     <p class="result-label">PREDICTION</p>
 
-                    <h3 id="prediction">Ready</h3>
+                    <h3 id="prediction">Loading AI model...</h3>
+
 
                     <div class="confidence-section">
+
                         <div class="confidence-header">
                             <span>Confidence</span>
                             <strong id="confidence">--</strong>
@@ -233,12 +251,15 @@
                                 style="width: 0%;"
                             ></div>
                         </div>
+
                     </div>
+
 
                     <div class="assessment-note">
                         <span>💡</span>
+
                         <p id="assessmentNote">
-                            Upload an image to begin AI-assisted assessment.
+                            Please wait while the AI model loads.
                         </p>
                     </div>
 
@@ -249,26 +270,29 @@
         </section>
 
 
-        <!-- ==========================================
-             SITE INFORMATION SECTION
-        =========================================== -->
-
+        <!-- SITE INFORMATION -->
         <section class="dashboard-card site-info-card">
 
             <div class="section-header">
+
                 <div>
                     <p class="card-label">ASSESSMENT DETAILS</p>
+
                     <h2>Site Information</h2>
+
                     <p>
                         Add information about the location and observation.
                     </p>
                 </div>
+
             </div>
+
 
             <div class="form-grid">
 
                 <div class="form-group">
                     <label for="location">Location</label>
+
                     <input
                         type="text"
                         id="location"
@@ -276,8 +300,10 @@
                     >
                 </div>
 
+
                 <div class="form-group">
                     <label for="notes">Notes</label>
+
                     <textarea
                         id="notes"
                         rows="3"
@@ -286,6 +312,7 @@
                 </div>
 
             </div>
+
 
             <div class="save-area">
 
@@ -303,21 +330,23 @@
         </section>
 
 
-        <!-- ==========================================
-             ACTIVITY LOG SECTION
-        =========================================== -->
-
+        <!-- ACTIVITY LOG -->
         <section class="dashboard-card activity-card" id="activity">
 
             <div class="section-header">
+
                 <div>
                     <p class="card-label">ASSESSMENT HISTORY</p>
+
                     <h2>📋 Activity Log</h2>
+
                     <p>
                         Record of previous site assessments made during this session.
                     </p>
                 </div>
+
             </div>
+
 
             <div class="table-container">
 
@@ -333,12 +362,15 @@
                         </tr>
                     </thead>
 
+
                     <tbody id="activityLog">
+
                         <tr class="empty-log">
                             <td colspan="5">
                                 No assessments recorded yet.
                             </td>
                         </tr>
+
                     </tbody>
 
                 </table>
@@ -348,24 +380,25 @@
         </section>
 
 
-        <!-- ==========================================
-             ABOUT SECTION
-        =========================================== -->
-
+        <!-- ABOUT SECTION -->
         <section class="dashboard-card about-card" id="about">
 
             <div class="section-header">
+
                 <div>
                     <p class="card-label">ABOUT THE PROJECT</p>
                     <h2>About IntelliTrap</h2>
                 </div>
+
             </div>
+
 
             <div class="about-content">
 
                 <div class="about-icon">🦟</div>
 
                 <div>
+
                     <p>
                         <strong>IntelliTrap</strong> is an AI-assisted mobile
                         monitoring system designed to support the identification
@@ -385,6 +418,7 @@
                         and do not confirm the presence of mosquito eggs or larvae.
                         Physical verification is recommended.
                     </p>
+
                 </div>
 
             </div>
@@ -393,14 +427,16 @@
 
 
         <!-- FOOTER -->
-
         <footer class="main-footer">
+
             <p>
                 IntelliTrap © 2026 | AI-Assisted Environmental Monitoring System
             </p>
+
             <p>
                 Developed for research and prototype demonstration.
             </p>
+
         </footer>
 
     </main>
