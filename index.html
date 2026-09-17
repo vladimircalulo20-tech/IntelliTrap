@@ -4,393 +4,409 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>IntelliTrap | AI Monitoring Dashboard</title>
+    <title>IntelliTrap | AI-Assisted Mosquito Monitoring</title>
 
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- AI Libraries -->
+    <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+
+    <!-- Teachable Machine Image Library -->
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 
 <body>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
+    <!-- ==========================================
+         SIDEBAR / NAVIGATION
+    =========================================== -->
 
+    <aside class="sidebar">
         <div class="brand">
-            <div class="brand-icon">🌿</div>
+            <div class="brand-icon">🦟</div>
             <div>
-                <h1>Intelli<span>Trap</span></h1>
-                <p>Smarter Monitoring</p>
+                <h1>IntelliTrap</h1>
+                <p>Smart Environmental Monitoring</p>
             </div>
         </div>
 
-        <nav>
-            <a href="#" class="nav-item active">
-                <span>⌂</span>
-                Dashboard
+        <nav class="navigation">
+            <a href="#dashboard" class="nav-item active">
+                <span>📊</span>
+                <span>Dashboard</span>
             </a>
 
             <a href="#capture" class="nav-item">
                 <span>📷</span>
-                Capture Site
-            </a>
-
-            <a href="#readings" class="nav-item">
-                <span>⌁</span>
-                Live Readings
+                <span>Capture Image</span>
             </a>
 
             <a href="#activity" class="nav-item">
-                <span>▤</span>
-                Activity Log
+                <span>📋</span>
+                <span>Activity Log</span>
             </a>
 
-            <a href="#" class="nav-item">
-                <span>⚙</span>
-                Settings
+            <a href="#about" class="nav-item">
+                <span>ℹ️</span>
+                <span>About IntelliTrap</span>
             </a>
         </nav>
 
-        <div class="sidebar-bottom">
-            <div class="mosquito-icon">🦟</div>
-            <p>Less breeding sites.</p>
-            <p>Fewer mosquitoes.</p>
-            <p>A healthier tomorrow.</p>
+        <div class="sidebar-footer">
+            <p>AI-Assisted Monitoring System</p>
+            <small>IntelliTrap Prototype</small>
         </div>
-
     </aside>
 
 
-    <!-- Main Content -->
-    <div class="main-content">
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
 
-        <!-- Top Header -->
-        <header class="topbar">
+    <main class="main-content">
 
+        <!-- TOP HEADER -->
+        <header class="top-header">
             <div>
-                <p class="small-label">ENVIRONMENTAL MONITORING SYSTEM</p>
-                <h2>Welcome to IntelliTrap</h2>
+                <p class="page-label">ENVIRONMENTAL MONITORING</p>
+                <h2 id="dashboard">IntelliTrap Dashboard</h2>
+                <p class="welcome-text">
+                    Monitor possible mosquito breeding-site indicators using AI-assisted image classification.
+                </p>
             </div>
 
-            <div class="topbar-right">
-                <div class="online-status">
-                    <span></span>
-                    System Online
-                </div>
-
-                <div class="date-time" id="dateTime">
-                    Loading date...
-                </div>
-
-                <div class="profile">V</div>
+            <div class="date-time-box">
+                <span>🕒</span>
+                <span id="dateTime">Loading date and time...</span>
             </div>
-
         </header>
 
 
-        <main>
+        <!-- ==========================================
+             DASHBOARD STATUS CARDS
+        =========================================== -->
 
-            <!-- Intro -->
-            <section class="intro">
+        <section class="status-grid">
+
+            <div class="status-card">
+                <div class="status-card-icon blue-icon">🤖</div>
                 <div>
-                    <h1>Monitoring Dashboard</h1>
-                    <p>
-                        Use AI and environmental sensors to identify
-                        potential mosquito breeding-site indicators.
-                    </p>
+                    <p class="status-label">Robot Status</p>
+                    <h3 id="deviceStatus">Offline</h3>
+                    <span class="status-description">
+                        ESP32 connection
+                    </span>
                 </div>
+            </div>
 
-                <div class="research-badge">
-                    AI-ASSISTED SYSTEM
+            <div class="status-card">
+                <div class="status-card-icon green-icon">📷</div>
+                <div>
+                    <p class="status-label">Camera</p>
+                    <h3>Smartphone</h3>
+                    <span class="status-description">
+                        Manual image capture
+                    </span>
                 </div>
-            </section>
+            </div>
 
-
-            <!-- Sensor Cards -->
-            <section class="sensor-grid" id="readings">
-
-                <div class="sensor-card temperature-card">
-                    <div class="sensor-top">
-                        <div class="sensor-icon orange">🌡️</div>
-                        <span class="card-menu">•••</span>
-                    </div>
-
-                    <p class="sensor-title">Temperature</p>
-                    <h2 id="temperature">-- °C</h2>
-                    <p class="sensor-source">ESP32 Sensor</p>
-
-                    <div class="sensor-status">
-                        <span></span>
-                        Normal
-                    </div>
+            <div class="status-card">
+                <div class="status-card-icon purple-icon">🧠</div>
+                <div>
+                    <p class="status-label">AI Model</p>
+                    <h3>Teachable Machine</h3>
+                    <span class="status-description">
+                        Image classification
+                    </span>
                 </div>
+            </div>
 
-
-                <div class="sensor-card humidity-card">
-                    <div class="sensor-top">
-                        <div class="sensor-icon blue">💧</div>
-                        <span class="card-menu">•••</span>
-                    </div>
-
-                    <p class="sensor-title">Humidity</p>
-                    <h2 id="humidity">-- %</h2>
-                    <p class="sensor-source">ESP32 Sensor</p>
-
-                    <div class="sensor-status">
-                        <span></span>
-                        Normal
-                    </div>
+            <div class="status-card">
+                <div class="status-card-icon orange-icon">📋</div>
+                <div>
+                    <p class="status-label">Assessment</p>
+                    <h3>Manual Review</h3>
+                    <span class="status-description">
+                        AI-assisted monitoring
+                    </span>
                 </div>
+            </div>
+
+        </section>
 
 
-                <div class="sensor-card water-card">
-                    <div class="sensor-top">
-                        <div class="sensor-icon purple">≋</div>
-                        <span class="card-menu">•••</span>
-                    </div>
+        <!-- ==========================================
+             CAPTURE AND AI ANALYSIS SECTION
+        =========================================== -->
 
-                    <p class="sensor-title">Water Presence</p>
-                    <h2 id="water">--</h2>
-                    <p class="sensor-source">Environmental Sensor</p>
+        <section class="content-grid" id="capture">
 
-                    <div class="sensor-status">
-                        <span></span>
-                        Monitoring
+            <!-- IMAGE CAPTURE CARD -->
+            <div class="dashboard-card capture-card">
+
+                <div class="section-header">
+                    <div>
+                        <p class="card-label">IMAGE INPUT</p>
+                        <h2>Capture or Upload Image</h2>
+                        <p>
+                            Use your smartphone camera to capture an image of the monitoring area.
+                        </p>
                     </div>
                 </div>
 
+                <div class="image-container" id="imageContainer">
 
-                <div class="sensor-card esp-card">
-                    <div class="sensor-top">
-                        <div class="sensor-icon green">⌁</div>
-                        <span class="card-menu">•••</span>
+                    <div class="image-placeholder" id="imagePlaceholder">
+                        <div class="camera-large">📷</div>
+                        <h3>No image captured</h3>
+                        <p>
+                            Take a photo or upload an image of the site.
+                        </p>
                     </div>
-
-                    <p class="sensor-title">ESP32 Status</p>
-                    <h2 id="deviceStatus">Offline</h2>
-                    <p class="sensor-source">Wi-Fi Connection</p>
-
-                    <div class="sensor-status">
-                        <span></span>
-                        Connected
-                    </div>
-                </div>
-
-            </section>
-
-
-            <!-- Main Monitoring Panels -->
-            <section class="dashboard-grid">
-
-                <!-- Capture Panel -->
-                <div class="dashboard-panel capture-panel" id="capture">
-
-                    <div class="panel-heading">
-                        <div>
-                            <p class="panel-overline">IMAGE INPUT</p>
-                            <h2>📷 Capture Site Image</h2>
-                        </div>
-                    </div>
-
-                    <p class="panel-description">
-                        Capture or upload an image of the location
-                        you want the AI to inspect.
-                    </p>
-
-                    <!-- Image Preview Area -->
-                    <div class="image-container" id="imageContainer">
-                        <div class="image-placeholder" id="imagePlaceholder">
-                            <div class="camera-large">📷</div>
-                            <h3>No image captured</h3>
-                            <p>Take a photo or upload an image of the site</p>
-                        </div>
-                    </div>
-
-                    <!-- Image Buttons -->
-                    <div class="button-group">
-
-                        <label for="imageInput" class="primary-button">
-                            📷 Take or Upload Photo
-                        </label>
-
-                        <input
-                            type="file"
-                            id="imageInput"
-                            accept="image/*"
-                            capture="environment"
-                            hidden
-                        >
-
-                        <button
-                            class="secondary-button"
-                            id="analyzeButton"
-                            onclick="analyzeImage()"
-                            disabled
-                        >
-                            ✨ Analyze with AI
-                        </button>
-
-                    </div>
-
-                    <p class="capture-note" id="imageMessage">
-                        Supported: JPG, PNG, and camera images
-                    </p>
 
                 </div>
 
+                <div class="button-group">
 
-                <!-- AI Assessment Panel -->
-                <div class="dashboard-panel ai-panel">
+                    <label for="imageInput" class="primary-button">
+                        📷 Take or Upload Photo
+                    </label>
 
-                    <div class="panel-heading">
-                        <div>
-                            <p class="panel-overline">INTELLIGENT ANALYSIS</p>
-                            <h2>🧠 AI Assessment</h2>
-                        </div>
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                        capture="environment"
+                        hidden
+                    >
 
-                        <div class="ai-symbol">AI</div>
+                    <button
+                        class="secondary-button"
+                        id="analyzeButton"
+                        onclick="analyzeImage()"
+                        disabled
+                    >
+                        ✨ Analyze with AI
+                    </button>
+
+                </div>
+
+                <p class="capture-note" id="imageMessage">
+                    Select an image to begin.
+                </p>
+
+            </div>
+
+
+            <!-- AI RESULT CARD -->
+            <div class="dashboard-card ai-card">
+
+                <div class="section-header">
+                    <div>
+                        <p class="card-label">AI ASSESSMENT</p>
+                        <h2>Analysis Result</h2>
+                        <p>
+                            AI-assisted classification of the uploaded image.
+                        </p>
                     </div>
 
-                    <p class="panel-description">
-                        The AI analyzes visible environmental indicators
-                        in the captured image.
-                    </p>
+                    <div class="ai-icon">🧠</div>
+                </div>
 
-                    <div class="ai-result" id="aiResultBox">
+                <div class="ai-result-box" id="aiResultBox">
 
-                        <div class="result-status-icon">!</div>
+                    <p class="result-label">PREDICTION</p>
 
-                        <div>
-                            <p class="result-small-label">AI PREDICTION</p>
-                            <h2 id="prediction">Waiting for image</h2>
-                        </div>
-
-                    </div>
+                    <h3 id="prediction">Ready</h3>
 
                     <div class="confidence-section">
-
                         <div class="confidence-header">
-                            <span>Confidence Level</span>
+                            <span>Confidence</span>
                             <strong id="confidence">--</strong>
                         </div>
 
                         <div class="confidence-track">
-                            <div id="confidenceBar"></div>
+                            <div
+                                class="confidence-bar"
+                                id="confidenceBar"
+                                style="width: 0%;"
+                            ></div>
                         </div>
-
                     </div>
 
-                    <div class="ai-message">
+                    <div class="assessment-note">
                         <span>💡</span>
                         <p id="assessmentNote">
-                            Capture an image and click “Analyze with AI”
-                            to receive a preliminary assessment.
+                            Upload an image to begin AI-assisted assessment.
                         </p>
                     </div>
 
-                    <p class="disclaimer">
-                        Note: AI results indicate possible visual risks
-                        and require physical verification.
-                    </p>
-
                 </div>
 
+            </div>
 
-                <!-- Site Information Panel -->
-                <div class="dashboard-panel site-panel">
+        </section>
 
-                    <div class="panel-heading">
-                        <div>
-                            <p class="panel-overline">RECORD DETAILS</p>
-                            <h2>📍 Site Information</h2>
-                        </div>
-                    </div>
 
+        <!-- ==========================================
+             SITE INFORMATION SECTION
+        =========================================== -->
+
+        <section class="dashboard-card site-info-card">
+
+            <div class="section-header">
+                <div>
+                    <p class="card-label">ASSESSMENT DETAILS</p>
+                    <h2>Site Information</h2>
+                    <p>
+                        Add information about the location and observation.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
                     <label for="location">Location</label>
                     <input
                         type="text"
                         id="location"
-                        placeholder="Example: School Garden"
+                        placeholder="Example: School drainage area"
                     >
+                </div>
 
-                    <label for="notes">Additional Notes</label>
+                <div class="form-group">
+                    <label for="notes">Notes</label>
                     <textarea
                         id="notes"
-                        placeholder="Add observations about the site..."
+                        rows="3"
+                        placeholder="Enter observations or additional details..."
                     ></textarea>
-
-                    <button
-                        class="save-button"
-                        onclick="saveAssessment()"
-                    >
-                        💾 Save Assessment
-                    </button>
-
-                    <p class="save-message" id="saveMessage"></p>
-
                 </div>
 
-            </section>
+            </div>
+
+            <div class="save-area">
+
+                <button
+                    class="primary-button save-button"
+                    onclick="saveAssessment()"
+                >
+                    💾 Save Assessment
+                </button>
+
+                <p id="saveMessage" class="save-message"></p>
+
+            </div>
+
+        </section>
 
 
-            <!-- Activity Log -->
-            <section class="dashboard-panel activity-panel" id="activity">
+        <!-- ==========================================
+             ACTIVITY LOG SECTION
+        =========================================== -->
 
-                <div class="activity-heading">
+        <section class="dashboard-card activity-card" id="activity">
 
-                    <div>
-                        <p class="panel-overline">RECORD HISTORY</p>
-                        <h2>▤ Activity Log</h2>
-                        <p class="panel-description">
-                            View previous site inspections and AI assessments.
-                        </p>
-                    </div>
+            <div class="section-header">
+                <div>
+                    <p class="card-label">ASSESSMENT HISTORY</p>
+                    <h2>📋 Activity Log</h2>
+                    <p>
+                        Record of previous site assessments made during this session.
+                    </p>
+                </div>
+            </div>
 
-                    <button class="view-button">View All →</button>
+            <div class="table-container">
 
+                <table class="activity-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date &amp; Time</th>
+                            <th>Location</th>
+                            <th>AI Result</th>
+                            <th>Confidence</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="activityLog">
+                        <tr class="empty-log">
+                            <td colspan="5">
+                                No assessments recorded yet.
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             ABOUT SECTION
+        =========================================== -->
+
+        <section class="dashboard-card about-card" id="about">
+
+            <div class="section-header">
+                <div>
+                    <p class="card-label">ABOUT THE PROJECT</p>
+                    <h2>About IntelliTrap</h2>
+                </div>
+            </div>
+
+            <div class="about-content">
+
+                <div class="about-icon">🦟</div>
+
+                <div>
+                    <p>
+                        <strong>IntelliTrap</strong> is an AI-assisted mobile
+                        monitoring system designed to support the identification
+                        of visual indicators associated with possible mosquito
+                        breeding sites.
+                    </p>
+
+                    <p>
+                        The system uses an ESP32-controlled mobile robot for
+                        movement, a smartphone camera for image capture, and a
+                        Teachable Machine image-classification model for AI-assisted
+                        assessment.
+                    </p>
+
+                    <p class="disclaimer">
+                        <strong>Note:</strong> AI results are preliminary assessments
+                        and do not confirm the presence of mosquito eggs or larvae.
+                        Physical verification is recommended.
+                    </p>
                 </div>
 
-                <div class="table-wrapper">
+            </div>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date & Time</th>
-                                <th>Location</th>
-                                <th>Temperature</th>
-                                <th>Humidity</th>
-                                <th>Water</th>
-                                <th>AI Prediction</th>
-                                <th>Confidence</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="activityLog">
-                            <tr>
-                                <td colspan="7" class="empty-row">
-                                    No records yet. Analyze and save a site assessment.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-            </section>
-
-        </main>
+        </section>
 
 
-        <footer>
-            <p>IntelliTrap Research Prototype © 2026</p>
-            <p>AI-Assisted Environmental Monitoring System</p>
+        <!-- FOOTER -->
+
+        <footer class="main-footer">
+            <p>
+                IntelliTrap © 2026 | AI-Assisted Environmental Monitoring System
+            </p>
+            <p>
+                Developed for research and prototype demonstration.
+            </p>
         </footer>
 
-    </div>
+    </main>
 
 
+    <!-- JavaScript -->
     <script src="script.js"></script>
 
 </body>
